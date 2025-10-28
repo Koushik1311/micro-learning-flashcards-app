@@ -1,0 +1,18 @@
+{
+  "scheme": "acme",
+  "userInterfaceStyle": "automatic",
+  "orientation": "default",
+  "web": {
+    "output": "static"
+  },
+  "plugins": [
+    [
+      "expo-router",
+      {
+        "origin": "https://n"
+      }
+    ]
+  ],
+  "name": "micro-learning-flashcard-app",
+  "slug": "micro-learning-flashcard-app"
+}
