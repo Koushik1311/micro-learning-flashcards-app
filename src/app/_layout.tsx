@@ -1,6 +1,18 @@
+import { useEffect } from "react";
 import "../global.css";
-import { Slot } from "expo-router";
+import { Stack } from "expo-router";
+import { initDB } from "@/lib/db";
+import { seedDummyData } from "@/lib/seed";
 
 export default function Layout() {
-  return <Slot />;
+  useEffect(() => {
+    initDB();
+    seedDummyData();
+  }, []);
+
+  return (
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    </Stack>
+  );
 }
