@@ -81,7 +81,7 @@ export default function StudyStreak() {
   }, []);
 
   return (
-    <View className="bg-[#F4F1EB] rounded-2xl p-4">
+    <View>
       <View className="flex-row justify-between items-center mb-3">
         <Text className="text-xl font-semibold text-gray-800">
           Study Streak
