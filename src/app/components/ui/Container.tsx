@@ -14,7 +14,6 @@ export default function Container({
 }: ContainerProps) {
   return (
     <View className={cn("flex-1 px-4 py-2 bg-[#F4F1EB]", className)} {...props}>
-      {/* <View className={cn("flex-1 px-4 py-2", className)} {...props}> */}
       {children}
     </View>
   );
