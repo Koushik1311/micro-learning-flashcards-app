@@ -1,8 +1,7 @@
 import { cn } from "@/lib/utils";
 import { View } from "react-native";
-import { SafeAreaViewProps } from "react-native-safe-area-context";
 
-interface ContainerProps extends SafeAreaViewProps {
+interface ContainerProps {
   children: React.ReactNode;
   className?: string;
 }
@@ -13,7 +12,7 @@ export default function Container({
   ...props
 }: ContainerProps) {
   return (
-    <View className={cn("flex-1 px-4 py-2 bg-[#F4F1EB]", className)} {...props}>
+    <View className={cn("px-4", className)} {...props}>
       {children}
     </View>
   );
