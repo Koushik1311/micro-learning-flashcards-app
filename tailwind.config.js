@@ -3,7 +3,12 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        bg: "#F4F1EB",
+        surface: "#FAF6F3",
+      },
+    },
   },
   future: {
     hoverOnlyWhenSupported: true,
