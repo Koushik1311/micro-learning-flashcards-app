@@ -97,9 +97,7 @@ export default function StudyStreak() {
   return (
     <View>
       <View className="flex-row justify-between items-center mb-3">
-        <Text className="text-xl font-semibold text-gray-800">
-          Study Streak
-        </Text>
+        <Text className="text-xl font-bold text-gray-800">Study Streak</Text>
         <MaterialIcons name="calendar-month" size={20} color="#6B6B6B" />
       </View>
 
