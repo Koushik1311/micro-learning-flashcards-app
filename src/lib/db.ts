@@ -1,6 +1,6 @@
-import { openDatabaseSync } from 'expo-sqlite';
+import { openDatabaseSync } from "expo-sqlite";
 
-export const db = openDatabaseSync('flash.db');
+export const db = openDatabaseSync("flash.db");
 
 export function initDB() {
   db.execAsync(
@@ -15,7 +15,8 @@ export function initDB() {
         price_rupees REAL,
         imported_at INTEGER
       );
-    `);
+    `,
+  );
   db.execAsync(`
       CREATE TABLE IF NOT EXISTS cards (
         id TEXT PRIMARY KEY,
@@ -41,11 +42,3 @@ export function initDB() {
       );
     `);
 }
-
-
-export async function getAllDecks() {
-  const result = await db.getAllAsync('SELECT * FROM decks;');
-  console.log('📘 Decks:', result);
-  return result;
-}
-
