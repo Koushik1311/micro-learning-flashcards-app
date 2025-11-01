@@ -8,18 +8,22 @@ const STORAGE_KEY = "study_streak_data_v1";
 
 export default function StudyStreak() {
   const [completedDays, setCompletedDays] = useState<number[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
+
   const todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1; // Monday = 0
 
+  // -------------------------
+  // Load saved streak data
+  // -------------------------
   useEffect(() => {
     const loadData = async () => {
       try {
         const saved = await AsyncStorage.getItem(STORAGE_KEY);
+        const now = new Date();
+
         if (saved) {
           const data = JSON.parse(saved);
-
-          // Check if it's a new week
           const lastReset = new Date(data.lastReset);
-          const now = new Date();
 
           const diffInDays =
             (now.getTime() - lastReset.getTime()) / (1000 * 60 * 60 * 24);
@@ -29,29 +33,26 @@ export default function StudyStreak() {
             (now.getDay() === 1 && diffInDays > 0) || diffInDays > 7;
 
           if (isNewWeek) {
-            await AsyncStorage.setItem(
-              STORAGE_KEY,
-              JSON.stringify({
-                completedDays: [todayIndex],
-                lastReset: now.toISOString(),
-              }),
-            );
+            const newData = {
+              completedDays: [todayIndex],
+              lastReset: now.toISOString(),
+            };
+            await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
             setCompletedDays([todayIndex]);
           } else {
             setCompletedDays(data.completedDays || []);
           }
         } else {
-          // First-time init
-          const now = new Date();
-          await AsyncStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify({
-              completedDays: [todayIndex],
-              lastReset: now.toISOString(),
-            }),
-          );
+          // First time init
+          const newData = {
+            completedDays: [todayIndex],
+            lastReset: now.toISOString(),
+          };
+          await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
           setCompletedDays([todayIndex]);
         }
+
+        setIsInitialized(true);
       } catch (e) {
         console.error("Error loading streak data:", e);
       }
@@ -60,26 +61,39 @@ export default function StudyStreak() {
     loadData();
   }, []);
 
-  // Save today's completion automatically
+  // -------------------------
+  // Mark today as completed (once data is loaded)
+  // -------------------------
   useEffect(() => {
+    if (!isInitialized) return;
+
     const saveToday = async () => {
-      if (!completedDays.includes(todayIndex)) {
-        const newDays = [...completedDays, todayIndex];
-        setCompletedDays(newDays);
-        const saved = await AsyncStorage.getItem(STORAGE_KEY);
-        const data = saved ? JSON.parse(saved) : {};
-        await AsyncStorage.setItem(
-          STORAGE_KEY,
-          JSON.stringify({
-            ...data,
-            completedDays: newDays,
-          }),
-        );
+      try {
+        if (!completedDays.includes(todayIndex)) {
+          const newDays = [...completedDays, todayIndex];
+          setCompletedDays(newDays);
+
+          const saved = await AsyncStorage.getItem(STORAGE_KEY);
+          const data = saved ? JSON.parse(saved) : {};
+          await AsyncStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({
+              ...data,
+              completedDays: newDays,
+            }),
+          );
+        }
+      } catch (e) {
+        console.error("Error saving streak data:", e);
       }
     };
-    saveToday();
-  }, []);
 
+    saveToday();
+  }, [isInitialized, completedDays, todayIndex]);
+
+  // -------------------------
+  // UI
+  // -------------------------
   return (
     <View>
       <View className="flex-row justify-between items-center mb-3">
@@ -94,13 +108,17 @@ export default function StudyStreak() {
           const isChecked = completedDays.includes(index);
 
           return (
-            <View key={index}>
-              <Text className="mt-2 mb-1.5 text-center text-gray-700 font-medium text-sm">
+            <View key={index} className="items-center">
+              <Text
+                className={`mt-2 mb-1.5 text-center font-medium text-sm ${
+                  isChecked ? "text-gray-700" : "text-gray-400"
+                }`}
+              >
                 {day}
               </Text>
               <View
                 className={`w-8 h-8 rounded-full border-2 items-center justify-center ${
-                  isChecked ? "bg-gray-200 border-gray-200" : "border-gray-300"
+                  isChecked ? "bg-gray-200 border-gray-200" : "border-gray-400"
                 }`}
               >
                 {isChecked && (
