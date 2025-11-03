@@ -10,7 +10,7 @@ export default function HomeScreen() {
         <StudyStreak />
       </Container>
 
-      <Container className="pt-12">
+      <Container className="pt-12 px-0">
         <ActiveDecks />
       </Container>
     </SafeAreaView>
