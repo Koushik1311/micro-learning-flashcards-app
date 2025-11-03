@@ -96,20 +96,20 @@ export default function StudyStreak() {
   // -------------------------
   return (
     <View>
-      <View className="flex-row justify-between items-center mb-3">
+      <View className="mb-3">
         <Text className="text-xl font-bold text-gray-800">Study Streak</Text>
-        <MaterialIcons name="calendar-month" size={20} color="#6B6B6B" />
       </View>
 
       <View className="flex-row justify-between">
         {days.map((day, index) => {
           const isChecked = completedDays.includes(index);
+          const isToday = index === todayIndex;
 
           return (
             <View key={index} className="items-center">
               <Text
                 className={`mt-2 mb-1.5 text-center font-medium text-sm ${
-                  isChecked ? "text-gray-700" : "text-gray-400"
+                  isToday ? "text-gray-700" : "text-gray-400"
                 }`}
               >
                 {day}
