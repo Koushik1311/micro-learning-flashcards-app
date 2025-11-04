@@ -41,4 +41,15 @@ export function initDB() {
         when_ts INTEGER               -- unix timestamp
       );
     `);
+
+  db.execAsync(`
+      CREATE TABLE IF NOT EXISTS deck_progress (
+        id TEXT PRIMARY KEY,
+        deck_id TEXT NOT NULL,
+        total_cards INTEGER DEFAULT 0,
+        learned_cards INTEGER DEFAULT 0,
+        updated_at INTEGER,
+        FOREIGN KEY(deck_id) REFERENCES decks(id)
+      );
+    `);
 }
