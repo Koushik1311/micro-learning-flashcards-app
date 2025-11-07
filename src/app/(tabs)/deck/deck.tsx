@@ -1,28 +1,27 @@
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { MotiView, AnimatePresence } from "moti";
-import { useDecks } from "@/query/decks";
+import { MotiView } from "moti";
 import DeckCards from "@/app/components/ui/DeckCards";
 
 export default function DeckScreen() {
   const [activeTab, setActiveTab] = useState<"your" | "discover">("your");
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F4F1EB] px-4 pt-4">
+    <SafeAreaView className="flex-1 bg-bg pt-4">
       {/* Segmented Control */}
-      <View className="flex-row justify-center gap-2 mb-6">
+      <View className="flex-row justify-center gap-2 mb-6 px-4">
         <TouchableOpacity
           onPress={() => setActiveTab("your")}
-          className={`flex-1 py-3 rounded-full border ${
+          className={`flex-1 py-3 rounded-full border-2 ${
             activeTab === "your"
-              ? "bg-[#E9E4DC] border-transparent"
-              : "border-[#E9E4DC]"
+              ? "bg-stone-200 border-transparent"
+              : "border-stone-200"
           }`}
         >
           <Text
             className={`text-center font-medium ${
-              activeTab === "your" ? "text-black" : "text-gray-500"
+              activeTab === "your" ? "text-stone-800" : "text-stone-500"
             }`}
           >
             Your Decks
@@ -31,15 +30,15 @@ export default function DeckScreen() {
 
         <TouchableOpacity
           onPress={() => setActiveTab("discover")}
-          className={`flex-1 py-3 rounded-full border ${
+          className={`flex-1 py-3 rounded-full border-2 ${
             activeTab === "discover"
-              ? "bg-primary border-transparent"
-              : "border-primary"
+              ? "bg-stone-200 border-transparent"
+              : "border-stone-200"
           }`}
         >
           <Text
             className={`text-center font-medium ${
-              activeTab === "discover" ? "text-black" : "text-gray-500"
+              activeTab === "discover" ? "text-stone-800" : "text-stone-500"
             }`}
           >
             Discover Decks
