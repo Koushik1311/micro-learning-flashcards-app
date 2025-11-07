@@ -1,6 +1,5 @@
 import { useDecksWithProgress } from "@/query/decks";
 import { View, Text, FlatList } from "react-native";
-import { FlashList } from "@shopify/flash-list";
 import { MotiView } from "moti";
 
 export default function DeckCards() {
@@ -16,6 +15,7 @@ export default function DeckCards() {
       data={decks}
       keyExtractor={(item) => item.id}
       renderItem={({ item, index }) => <DeckRow item={item} index={index} />}
+      showsVerticalScrollIndicator={false}
     />
   );
 }
@@ -40,15 +40,6 @@ function DeckRow({ item, index }) {
         </View>
 
         <Text className="text-sm font-medium">{pct.toFixed(1)}%</Text>
-      </View>
-
-      <View className="h-2 bg-gray-200 rounded-full mt-3 overflow-hidden">
-        <MotiView
-          from={{ width: "0%" }}
-          animate={{ width: `${pct}%` }}
-          transition={{ type: "timing", duration: 600 }}
-          className="h-full bg-[#007aff] rounded-full"
-        />
       </View>
     </MotiView>
   );
