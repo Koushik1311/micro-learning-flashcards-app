@@ -24,6 +24,7 @@ export default function TabsLayout() {
             <MaterialCommunityIcons
               name={focused ? "view-dashboard" : "view-dashboard-outline"}
               size={24}
+              color={focused ? "#292524" : "#79716b"}
             />
           ),
         }}
@@ -37,6 +38,7 @@ export default function TabsLayout() {
             <MaterialCommunityIcons
               name={focused ? "cards" : "cards-outline"}
               size={24}
+              color={focused ? "#292524" : "#79716b"}
             />
           ),
         }}
@@ -49,6 +51,7 @@ export default function TabsLayout() {
             <MaterialCommunityIcons
               name={focused ? "clipboard" : "clipboard-outline"}
               size={24}
+              color={focused ? "#292524" : "#79716b"}
             />
           ),
         }}
@@ -61,6 +64,7 @@ export default function TabsLayout() {
             <MaterialCommunityIcons
               name={focused ? "cog" : "cog-outline"}
               size={24}
+              color={focused ? "#292524" : "#79716b"}
             />
           ),
         }}
