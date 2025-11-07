@@ -8,7 +8,7 @@ export default function ActiveDecks() {
   return (
     <View>
       <View className="mb-3 px-4">
-        <Text className="text-xl font-bold text-gray-800">Active Decks</Text>
+        <Text className="text-xl font-bold">Active Decks</Text>
       </View>
 
       <FlatList
@@ -20,13 +20,13 @@ export default function ActiveDecks() {
         renderItem={({ item }) => (
           <View className="overflow-visible">
             <View
-              className="flex-1 border border-gray-300 rounded-md mb-1.5 bg-surface"
+              className="flex-1 border border-stone-300 rounded-md mb-1.5 bg-surface"
               style={{ elevation: 6 }}
             >
               <Link href={`/decks/${item.id}`}>
                 <View className="px-5 py-3.5">
                   <Text className="font-semibold">{item.title}</Text>
-                  <Text className="text-sm text-gray-400 font-medium">
+                  <Text className="text-sm text-stone-400 font-medium">
                     {item.card_count} cards in this deck
                   </Text>
                 </View>

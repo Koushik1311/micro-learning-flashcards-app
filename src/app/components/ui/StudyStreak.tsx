@@ -97,7 +97,7 @@ export default function StudyStreak() {
   return (
     <View>
       <View className="mb-3">
-        <Text className="text-xl font-bold text-gray-800">Study Streak</Text>
+        <Text className="text-xl font-bold">Study Streak</Text>
       </View>
 
       <View className="flex-row justify-between">
@@ -109,18 +109,20 @@ export default function StudyStreak() {
             <View key={index} className="items-center">
               <Text
                 className={`mt-2 mb-1.5 text-center font-medium text-sm ${
-                  isToday ? "text-gray-700" : "text-gray-400"
+                  isToday ? "text-stone-700" : "text-stone-400"
                 }`}
               >
                 {day}
               </Text>
               <View
                 className={`w-8 h-8 rounded-full border-2 items-center justify-center ${
-                  isChecked ? "bg-gray-200 border-gray-200" : "border-gray-400"
+                  isChecked
+                    ? "bg-stone-200 border-stone-200"
+                    : "border-stone-400"
                 }`}
               >
                 {isChecked && (
-                  <MaterialIcons name="check" size={16} color="#4B5563" />
+                  <MaterialIcons name="check" size={16} color="#5C5A50" />
                 )}
               </View>
             </View>
