@@ -37,7 +37,7 @@ function DeckRow({ item, index }) {
             {item.title}
           </Text>
           <Text className="text-sm text-[#373739]">
-            {item.progress.learned} / {item.progress.total} cards
+            {item.progress.learned} / {item.progress.total}
           </Text>
         </View>
 
