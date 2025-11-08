@@ -3,12 +3,17 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MotiView } from "moti";
 import DeckCards from "@/app/components/ui/DeckCards";
+import Header from "@/app/components/layout/Header";
+import Feather from "@expo/vector-icons/Feather";
 
 export default function DeckScreen() {
   const [activeTab, setActiveTab] = useState<"your" | "discover">("your");
 
   return (
-    <SafeAreaView className="flex-1 bg-bg pt-4">
+    <SafeAreaView className="flex-1 bg-bg">
+      <Header className="mb-4 mt-1">
+        <Feather name="search" size={26} color="#292524" />
+      </Header>
       {/* Segmented Control */}
       <View className="flex-row justify-center gap-2 mb-6 px-4">
         <TouchableOpacity

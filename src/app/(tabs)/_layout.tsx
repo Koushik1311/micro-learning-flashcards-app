@@ -31,7 +31,7 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
-        name="deck/deck"
+        name="deck"
         options={{
           title: "Decks",
           tabBarIcon: ({ focused }) => (
