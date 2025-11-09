@@ -4,16 +4,23 @@ import Container from "../components/ui/Container";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useDeckWithProgressById } from "@/query/decks";
-import { DeckProgressBar } from "../components/ui/DeckProgressBar";
+import { ProgressBar } from "../components/ui/ProgressBar";
 
 export default function FlashcardScreen() {
   const { deckId } = useLocalSearchParams<{ deckId: string }>();
-  const { data: deckData } = useDeckWithProgressById(deckId);
-  console.log("Deck Progress: ", deckData);
+  const { data: deckData, isLoading } = useDeckWithProgressById(deckId);
+
+  if (isLoading || !deckData) {
+    return (
+      <SafeAreaView className="bg-bg flex-1 items-center justify-center">
+        <Text>Loading...</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="bg-bg">
-      <Container>
+      <View className="mr-4 ml-2 mb-2">
         <View className="flex-row items-center justify-between">
           <MaterialCommunityIcons name="chevron-left" size={30} color="black" />
           <Text className="text-lg font-semibold">{deckData.title}</Text>
@@ -22,7 +29,9 @@ export default function FlashcardScreen() {
             {deckData.card_count || deckData.progress.total}
           </Text>
         </View>
-        <DeckProgressBar percent={deckData.progress.percent} />
+      </View>
+      <Container>
+        <ProgressBar percent={deckData.progress.percent} />
       </Container>
     </SafeAreaView>
   );
