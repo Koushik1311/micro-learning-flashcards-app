@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useDeckWithProgressById } from "@/query/decks";
 import { ProgressBar } from "../components/ui/ProgressBar";
+import FlashcardContainer from "../components/flashcard/FlashcardContainer";
 
 export default function FlashcardScreen() {
   const { deckId } = useLocalSearchParams<{ deckId: string }>();
@@ -19,7 +20,7 @@ export default function FlashcardScreen() {
   }
 
   return (
-    <SafeAreaView className="bg-bg">
+    <SafeAreaView className="bg-bg flex-1">
       <View className="mr-4 ml-2 mb-2">
         <View className="flex-row items-center justify-between">
           <MaterialCommunityIcons name="chevron-left" size={30} color="black" />
@@ -32,6 +33,13 @@ export default function FlashcardScreen() {
       </View>
       <Container>
         <ProgressBar percent={deckData.progress.percent} />
+      </Container>
+      <Container>
+        <FlashcardContainer
+          question="Capital of India?"
+          answer="New Delhi"
+          hint="Starts with N"
+        />
       </Container>
     </SafeAreaView>
   );
