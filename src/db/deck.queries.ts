@@ -64,3 +64,30 @@ export async function getDeckWithProgress() {
     };
   });
 }
+
+export async function getDeckWithProgressById(
+  deckId: string,
+): Promise<
+  | (DeckType & {
+      progress: { learned: number; total: number; percent: number };
+    })
+  | null
+> {
+  const deck = (await db.getFirstAsync(
+    "SELECT * FROM decks WHERE id = ? LIMIT 1;",
+    [deckId],
+  )) as DeckType | undefined;
+
+  if (!deck) return null;
+
+  const progress = await getProgressByDeckId(deckId);
+
+  const learned = progress?.learned_cards ?? 0;
+  const total = progress?.total_cards ?? deck.card_count ?? 0;
+  const percent = total > 0 ? (learned / total) * 100 : 0;
+
+  return {
+    ...deck,
+    progress: { learned, total, percent },
+  };
+}
