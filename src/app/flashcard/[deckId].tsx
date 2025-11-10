@@ -34,7 +34,7 @@ export default function FlashcardScreen() {
       <Container>
         <ProgressBar percent={deckData.progress.percent} />
       </Container>
-      <Container>
+      <Container className="flex-1 justify-center">
         <FlashcardContainer
           question="Capital of India?"
           answer="New Delhi"
