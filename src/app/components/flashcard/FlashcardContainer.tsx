@@ -4,9 +4,10 @@ import Animated, {
   useSharedValue,
   useAnimatedProps,
   withTiming,
+  useAnimatedStyle,
 } from "react-native-reanimated";
 import { MotiView } from "moti";
-import Svg, { Circle } from "react-native-svg";
+import Svg, { Rect } from "react-native-svg";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -19,7 +20,7 @@ type FlashcardContainerProps = {
   hint?: string;
 };
 
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
 export default function FlashcardContainer({
   question,
@@ -28,55 +29,79 @@ export default function FlashcardContainer({
 }: FlashcardContainerProps) {
   const [revealed, setRevealed] = useState(false);
   const radius = useSharedValue(0);
+  const cardScale = useSharedValue(1);
+  const originX = width - 90;
+  const originY = CARD_HEIGHT - 40;
 
-  const animatedCircleProps = useAnimatedProps(() => ({
-    r: radius.value,
-  }));
+  // 🧠 Animate square expansion + corner morph
+  const animatedRectProps = useAnimatedProps(() => {
+    // radius.value grows from 0 → width * 1.35
+    const maxRadius = width * 1.35;
+
+    // interpolate rx (corner radius)
+    const rx = 60 * (1 - radius.value / maxRadius); // large when small, small when large
+
+    return {
+      x: originX - radius.value,
+      y: originY - radius.value,
+      width: radius.value * 2,
+      height: radius.value * 2,
+      rx, // smooth corner rounding
+    };
+  });
 
   const handleReveal = () => {
     if (revealed) {
-      // hide
-      radius.value = withTiming(0, { duration: 600 });
-      setTimeout(() => setRevealed(false), 500);
+      // 👇 no scale pulse when retracting
+      radius.value = withTiming(0, { duration: 300 });
+      setTimeout(() => setRevealed(false), 250);
     } else {
-      // show
+      // 👇 scale pulse only when expanding
+      cardScale.value = withTiming(1.03, { duration: 180 }, () => {
+        cardScale.value = withTiming(1, { duration: 180 });
+      });
+
       setRevealed(true);
-      radius.value = withTiming(width * 1.2, { duration: 600 });
+      radius.value = withTiming(width * 1.35, { duration: 400 });
     }
   };
+  const cardAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: cardScale.value }],
+  }));
 
   return (
     <View className="items-center justify-center p-4">
-      <View className="relative w-full min-h-[250px] rounded-2xl overflow-hidden shadow-md">
-        {/* FRONT: Question */}
-        {!revealed && (
-          <View className="absolute inset-0 bg-white rounded-2xl p-6 justify-center items-center">
-            <Text className="text-xl font-semibold text-center text-stone-800">
-              {question}
-            </Text>
-          </View>
-        )}
+      <Animated.View
+        style={cardAnimatedStyle}
+        className="relative w-full min-h-[250px] rounded-2xl overflow-hidden shadow-md bg-white"
+      >
+        {/* Base Question Card */}
+        <View className="absolute inset-0 rounded-2xl p-6 justify-center items-center">
+          <Text className="text-xl font-semibold text-center text-stone-800">
+            {question}
+          </Text>
+        </View>
 
-        {/* BACK: Revealed hint & answer */}
+        {/* Hint + Answer Overlay */}
         {revealed && (
           <MaskedView
-            style={{ flex: 1 }}
+            style={{ flex: 1, position: "absolute", inset: 0 }}
             maskElement={
               <Svg width={width} height={CARD_HEIGHT}>
-                <AnimatedCircle
-                  animatedProps={animatedCircleProps}
-                  cx={width - 50} // from bottom right corner
-                  cy={CARD_HEIGHT - 30}
+                <AnimatedRect
+                  animatedProps={animatedRectProps}
+                  // cx={originX}
+                  // cy={originY}
                   fill="black"
                 />
               </Svg>
             }
           >
-            <View className="absolute inset-0 bg-stone-800 rounded-2xl p-6 justify-center items-center">
+            <View className="absolute inset-0 bg-stone-800 rounded-2xl justify-center items-center">
               <MotiView
-                from={{ opacity: 0, translateY: 20 }}
-                animate={{ opacity: 1, translateY: 0 }}
-                transition={{ type: "timing", duration: 500, delay: 200 }}
+                from={{ opacity: 0, translateY: 10, scale: 0.9 }}
+                animate={{ opacity: 1, translateY: 0, scale: 1 }}
+                transition={{ type: "timing", duration: 250, delay: 150 }}
               >
                 {hint && (
                   <Text className="text-base text-amber-400 mb-2 italic">
@@ -91,11 +116,11 @@ export default function FlashcardContainer({
           </MaskedView>
         )}
 
-        {/* Reveal button */}
+        {/* Reveal Button */}
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={handleReveal}
-          className="absolute bottom-4 right-4 bg-stone-700 p-3 rounded-full"
+          className="absolute bottom-4 right-4 bg-stone-800 p-3 rounded-full"
         >
           <MaterialCommunityIcons
             name="lightbulb-on-outline"
@@ -103,7 +128,7 @@ export default function FlashcardContainer({
             color="white"
           />
         </TouchableOpacity>
-      </View>
+      </Animated.View>
     </View>
   );
 }
