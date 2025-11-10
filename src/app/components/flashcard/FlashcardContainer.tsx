@@ -12,7 +12,7 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const { width } = Dimensions.get("window");
-const CARD_HEIGHT = 250;
+const CARD_HEIGHT = 400;
 
 type FlashcardContainerProps = {
   question: string;
@@ -52,6 +52,9 @@ export default function FlashcardContainer({
 
   const handleReveal = () => {
     if (revealed) {
+      cardScale.value = withTiming(0.98, { duration: 150 }, () => {
+        cardScale.value = withTiming(1, { duration: 150 });
+      });
       // 👇 no scale pulse when retracting
       radius.value = withTiming(0, { duration: 300 });
       setTimeout(() => setRevealed(false), 250);
@@ -73,7 +76,7 @@ export default function FlashcardContainer({
     <View className="items-center justify-center p-4">
       <Animated.View
         style={cardAnimatedStyle}
-        className="relative w-full min-h-[250px] rounded-2xl overflow-hidden shadow-md bg-white"
+        className="relative w-full min-h-[400px] rounded-2xl overflow-hidden shadow-md bg-white"
       >
         {/* Base Question Card */}
         <View className="absolute inset-0 rounded-2xl p-6 justify-center items-center">
@@ -98,11 +101,7 @@ export default function FlashcardContainer({
             }
           >
             <View className="absolute inset-0 bg-stone-800 rounded-2xl justify-center items-center">
-              <MotiView
-                from={{ opacity: 0, translateY: 10, scale: 0.9 }}
-                animate={{ opacity: 1, translateY: 0, scale: 1 }}
-                transition={{ type: "timing", duration: 250, delay: 150 }}
-              >
+              <View>
                 {hint && (
                   <Text className="text-base text-amber-400 mb-2 italic">
                     Hint: {hint}
@@ -111,7 +110,7 @@ export default function FlashcardContainer({
                 <Text className="text-2xl font-bold text-center text-white">
                   {answer}
                 </Text>
-              </MotiView>
+              </View>
             </View>
           </MaskedView>
         )}
