@@ -76,4 +76,15 @@ export function initDB() {
       FOREIGN KEY(deck_id) REFERENCES decks(id)
     );
   `);
+
+  // after creating tables
+  db.execAsync(`
+    CREATE INDEX IF NOT EXISTS idx_cards_deck_id
+    ON cards(deck_id);
+  `);
+
+  db.execAsync(`
+    CREATE INDEX IF NOT EXISTS idx_card_reviews_deck_due
+    ON card_reviews(deck_id, due_at);
+  `);
 }

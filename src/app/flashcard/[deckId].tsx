@@ -2,12 +2,10 @@ import { View, Text } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import Container from "../../components/ui/Container";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useDeckWithProgressById } from "@/query/decks";
 import { ProgressBar } from "../../components/ui/ProgressBar";
 import FlashcardUI from "@/components/flashcard/FlashcardUI";
 import { useSessionQueue } from "@/hooks/cards";
-import FlashcardContainer from "@/components/flashcard/FlashcardContainer";
 
 export default function FlashcardScreen() {
   const { deckId } = useLocalSearchParams<{ deckId: string }>();
