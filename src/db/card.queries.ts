@@ -1,5 +1,6 @@
 import { db } from "../lib/db";
 import { CardType, CardReviewState, CardWithReview } from "@/types/card";
+import { recalcLearnedFromReviews } from "./deck.queries";
 
 /**
  * Get a single card by ID
@@ -146,6 +147,9 @@ export async function upsertCardReview(
       ]
     );
   }
+
+  // 🔄 keep deck_progress.learned_cards in sync
+  await recalcLearnedFromReviews(reviewState.deck_id);
 }
 
 /**
@@ -157,4 +161,63 @@ export async function getCardsByDeckId(deckId: string): Promise<CardType[]> {
     [deckId]
   );
   return results as CardType[];
+}
+
+/**
+ * Get a batch of cards for the current session (due first, then new)
+ */
+export async function getSessionQueue(
+  deckId: string,
+  limit: number
+): Promise<CardWithReview[]> {
+  const now = Date.now();
+
+  const rows = await db.getAllAsync<any>(
+    `
+    SELECT
+      c.*,
+      cr.card_id        AS review_card_id,
+      cr.deck_id        AS review_deck_id,
+      cr.interval       AS review_interval,
+      cr.ease           AS review_ease,
+      cr.due_at         AS review_due_at,
+      cr.last_reviewed  AS review_last_reviewed,
+      cr.review_count   AS review_review_count
+    FROM cards c
+    LEFT JOIN card_reviews cr ON c.id = cr.card_id
+    WHERE c.deck_id = ?
+      AND (
+        cr.card_id IS NULL         -- new cards
+        OR cr.due_at <= ?          -- due reviews
+      )
+    ORDER BY
+      CASE WHEN cr.card_id IS NULL THEN 1 ELSE 0 END,  -- reviews first, then new
+      cr.due_at ASC
+    LIMIT ?;
+    `,
+    [deckId, now, limit]
+  );
+
+  return rows.map((row) => ({
+    id: row.id,
+    deck_id: row.deck_id,
+    question: row.question,
+    answer: row.answer,
+    hint: row.hint,
+    solution: row.solution,
+    meta: row.meta,
+    tags: row.tags,
+    created_at: row.created_at,
+    review: row.review_card_id
+      ? {
+          card_id: row.review_card_id,
+          deck_id: row.review_deck_id,
+          interval: row.review_interval ?? 0,
+          ease: row.review_ease ?? 2.5,
+          due_at: row.review_due_at,
+          last_reviewed: row.review_last_reviewed,
+          review_count: row.review_review_count ?? 0,
+        }
+      : null,
+  }));
 }

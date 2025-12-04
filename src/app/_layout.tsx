@@ -19,11 +19,11 @@ export default function Layout() {
         const cardReviews = await db.getAllAsync("SELECT * FROM card_reviews;");
         const existingCards = await db.getAllAsync<{ count: number }>('SELECT COUNT(*) as count FROM cards;');
         const results = await db.getAllAsync("SELECT * FROM deck_progress;");
-        // console.log("=== card_reviews data ===");
-        console.log("=== cards data ===");
-        console.log(JSON.stringify(existingCards, null, 2));
+        // console.log("=== cards data ===");
+        // console.log(JSON.stringify(existingCards, null, 2));
         console.log("=== results data ===");
         console.log(JSON.stringify(results, null, 2));
+        // console.log("=== card_reviews data ===");
         // console.log(JSON.stringify(cardReviews, null, 2));
         // console.log(`Total reviews: ${cardReviews.length}`);
       } catch (error) {

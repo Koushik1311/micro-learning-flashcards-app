@@ -19,6 +19,8 @@ type FlashcardUIProps = {
   question: string;
   answer: string;
   hint?: string;
+  learned: number;
+  total: number;
   onSubmitRating?: (rating: Rating) => void;
 };
 
@@ -29,7 +31,9 @@ export default function
   deckName,
   question,
   answer,
-  hint,
+    hint,
+  learned,
+  total,
   onSubmitRating,
 }: FlashcardUIProps) {
   const [revealed, setRevealed] = useState(false);
@@ -100,7 +104,11 @@ export default function
               {question}
             </Text>
           </View>
-          
+          <View>
+            <Text className="font-semibold text-stone-400">
+              {learned} / {total}
+            </Text>
+          </View>
         </View>
 
         {/* Hint + Answer Overlay */}

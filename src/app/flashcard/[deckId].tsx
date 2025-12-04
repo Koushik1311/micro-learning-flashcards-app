@@ -6,14 +6,21 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useDeckWithProgressById } from "@/query/decks";
 import { ProgressBar } from "../../components/ui/ProgressBar";
 import FlashcardUI from "@/components/flashcard/FlashcardUI";
-import { useNextCard } from "@/hooks/cards";
+import { useSessionQueue } from "@/hooks/cards";
 
 export default function FlashcardScreen() {
   const { deckId } = useLocalSearchParams<{ deckId: string }>();
   const { data: deckData, isLoading } = useDeckWithProgressById(deckId);
-  const { card, isLoading: isCardLoading, isError, error, submitRating, reload } = useNextCard(deckId);
+  const {
+    card,
+    cardsLeftToday,
+    isLoading: isQueueLoading,
+    isError,
+    error,
+    submitRating,
+  } = useSessionQueue(deckId, 20); // default 20, later user-configurable
 
-  if (isLoading || !deckData) {
+  if (isLoading || !deckId || !deckData) {
     return (
       <SafeAreaView className="bg-bg flex-1 items-center justify-center">
         <Text>Loading...</Text>
@@ -21,10 +28,10 @@ export default function FlashcardScreen() {
     );
   }
 
-  if (isCardLoading) {
+  if (isQueueLoading) {
     return (
       <SafeAreaView className="bg-bg flex-1 items-center justify-center">
-        <Text>Loading card...</Text>
+        <Text>Loading cards...</Text>
       </SafeAreaView>
     );
   }
@@ -32,7 +39,7 @@ export default function FlashcardScreen() {
   if (isError) {
     return (
       <SafeAreaView className="bg-bg flex-1 items-center justify-center">
-        <Text>Error loading card: {error?.message}</Text>
+        <Text>Error loading session: {error?.message}</Text>
       </SafeAreaView>
     );
   }
@@ -40,7 +47,7 @@ export default function FlashcardScreen() {
   if (!card) {
     return (
       <SafeAreaView className="bg-bg flex-1 items-center justify-center">
-        <Text>No more cards to review! 🎉</Text>
+        <Text>No cards to review! 🎉</Text>
       </SafeAreaView>
     );
   }
@@ -54,13 +61,20 @@ export default function FlashcardScreen() {
             size={30}
             color="#292524"
           />
-          <ProgressBar percent={deckData.progress.percent} />
+          <View className="flex-1 mr-4">
+            <ProgressBar percent={deckData.progress.percent} />
+          </View>
+          <Text className="text-xs text-stone-600">
+            {cardsLeftToday} left
+          </Text>
         </View>
-        <FlashcardUI 
-          deckName={deckData.title} 
+        <FlashcardUI
+          deckName={deckData.title}
+          learned={deckData.progress.learned}
+          total={deckData.progress.total || deckData.card_count}
           question={card.question}
-          answer={card.answer} 
-          hint={card.hint} 
+          answer={card.answer}
+          hint={card.hint}
           onSubmitRating={submitRating}
         />
       </Container>

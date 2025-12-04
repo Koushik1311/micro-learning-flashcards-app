@@ -114,3 +114,14 @@ export async function getDeckWithProgressById(
     progress: { learned, total, percent },
   };
 }
+
+export async function recalcLearnedFromReviews(deckId: string) {
+  const row = (await db.getFirstAsync<{ count: number }>(
+    "SELECT COUNT(DISTINCT card_id) as count FROM card_reviews WHERE deck_id = ?;",
+    [deckId],
+  )) as { count: number } | undefined;
+
+  const learned = row?.count ?? 0;
+
+  await upsertDeckProgress(deckId, { learned });
+}
