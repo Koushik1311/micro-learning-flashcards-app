@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { View, Text, TouchableOpacity, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+  ScrollView,
+} from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedProps,
@@ -81,18 +87,29 @@ export default function FlashcardContainer({
     <View className="items-center justify-center p-4 w-full">
       <Animated.View
         style={cardAnimatedStyle}
-        className="relative w-full h-[400px] rounded-2xl overflow-hidden shadow-md bg-white"
+        className="relative w-full min-h-[400px] max-h-[800px] rounded-2xl overflow-hidden shadow-md bg-white"
+        // className="relative w-full h-[400px] rounded-2xl overflow-hidden shadow-md bg-white"
       >
         {/* Base Question Card */}
         <View className="absolute inset-0 rounded-2xl p-6">
           <View className="flex-row justify-center">
             <Text className="font-semibold text-stone-500">{deckName}</Text>
           </View>
-          <View className="flex-1 justify-center items-center">
+          {/* <View className="flex-1 justify-center items-center">
             <Text className="text-xl font-semibold text-center text-stone-800">
               {question}
             </Text>
-          </View>
+          </View> */}
+          <ScrollView
+            className="flex-1 px-4"
+            contentContainerStyle={{ paddingVertical: 24 }}
+            showsVerticalScrollIndicator={false}
+          >
+            <Text className="text-xl font-semibold text-left text-stone-800">
+              {question}
+            </Text>
+          </ScrollView>
+
           <View>
             <Text className="font-semibold text-stone-400">
               {learned} / {total}
