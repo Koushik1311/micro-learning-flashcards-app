@@ -26,12 +26,11 @@ type FlashcardUIProps = {
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
-export default function
-  FlashcardUI({
+export default function FlashcardUI({
   deckName,
   question,
   answer,
-    hint,
+  hint,
   learned,
   total,
   onSubmitRating,
@@ -81,7 +80,7 @@ export default function
     transform: [{ scale: cardScale.value }],
   }));
 
-   const handleRating = (rating: Rating) => {
+  const handleRating = (rating: Rating) => {
     onSubmitRating?.(rating);
     // Reset card state for next card
     setRevealed(false);
@@ -155,26 +154,26 @@ export default function
         </TouchableOpacity>
       </Animated.View>
 
-      {/* Rating Buttons - Show when answer is revealed */}
-      {revealed && onSubmitRating && (
-        <View className="flex-row gap-4 mt-6">
+      {/* Rating Buttons */}
+      {onSubmitRating && (
+        <View className="flex-row justify-between mt-16 w-full">
           <TouchableOpacity
             onPress={() => handleRating("again")}
-            className="bg-red-500 px-6 py-3 rounded-lg"
+            className="border border-stone-300 rounded-2xl mb-1.5 bg-surface px-8 py-3.5"
           >
-            <Text className="text-white font-semibold">Again</Text>
+            <Text className="font-semibold text-sm">Again</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => handleRating("hard")}
-            className="bg-orange-500 px-6 py-3 rounded-lg"
+            className="border border-stone-300 rounded-2xl mb-1.5 bg-surface px-8 py-3.5"
           >
-            <Text className="text-white font-semibold">Hard</Text>
+            <Text className="font-semibold text-sm">Hard</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => handleRating("easy")}
-            className="bg-green-500 px-6 py-3 rounded-lg"
+            className="border border-stone-300 rounded-2xl mb-1.5 bg-surface px-8 py-3.5"
           >
-            <Text className="text-white font-semibold">Easy</Text>
+            <Text className="font-semibold text-sm">Easy</Text>
           </TouchableOpacity>
         </View>
       )}

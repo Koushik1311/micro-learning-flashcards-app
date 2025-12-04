@@ -7,6 +7,7 @@ import { useDeckWithProgressById } from "@/query/decks";
 import { ProgressBar } from "../../components/ui/ProgressBar";
 import FlashcardUI from "@/components/flashcard/FlashcardUI";
 import { useSessionQueue } from "@/hooks/cards";
+import FlashcardContainer from "@/components/flashcard/FlashcardContainer";
 
 export default function FlashcardScreen() {
   const { deckId } = useLocalSearchParams<{ deckId: string }>();
@@ -55,18 +56,16 @@ export default function FlashcardScreen() {
   return (
     <SafeAreaView className="bg-bg flex-1">
       <Container className="mt-16">
-        <View className="flex-row items-center justify-between gap-4 mr-16 ml-1 mb-28">
-          <MaterialCommunityIcons
-            name="close-thick"
-            size={30}
-            color="#292524"
-          />
+        <View className="flex-row items-center justify-between gap-4 mr-4 ml-1 mb-28">
+          <View className="w-7 h-7 justify-center items-center">
+            <View className="w-6 h-[3px] bg-black rotate-45 absolute rounded-full" />
+            <View className="w-6 h-[3px] bg-black -rotate-45 absolute rounded-full" />
+          </View>
+
           <View className="flex-1 mr-4">
             <ProgressBar percent={deckData.progress.percent} />
           </View>
-          <Text className="text-xs text-stone-600">
-            {cardsLeftToday} left
-          </Text>
+          <Text className="text-xs text-stone-600">{cardsLeftToday} left</Text>
         </View>
         <FlashcardUI
           deckName={deckData.title}
