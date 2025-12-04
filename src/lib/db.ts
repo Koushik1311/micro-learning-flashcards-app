@@ -31,6 +31,21 @@ export function initDB() {
         FOREIGN KEY(deck_id) REFERENCES decks(id)
       );
     `);
+  
+  db.execAsync(`
+    CREATE TABLE IF NOT EXISTS card_srs (
+      card_id TEXT PRIMARY KEY,
+      deck_id TEXT,
+      next_review INTEGER,
+      interval INTEGER,
+      ease REAL,
+      streak INTEGER,
+      is_new INTEGER,
+      updated_at INTEGER,
+      FOREIGN KEY(card_id) REFERENCES cards(id),
+      FOREIGN KEY(deck_id) REFERENCES decks(id)
+    );
+  `);
 
   db.execAsync(`
       CREATE TABLE IF NOT EXISTS results (
