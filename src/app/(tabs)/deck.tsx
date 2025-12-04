@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MotiView } from "moti";
-import DeckCards from "@/app/components/ui/DeckCards";
-import Header from "@/app/components/layout/Header";
+import DeckCards from "@/components/ui/DeckCards";
+import Header from "@/components/layout/Header";
 import Feather from "@expo/vector-icons/Feather";
 
 export default function DeckScreen() {
