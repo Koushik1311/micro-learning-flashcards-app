@@ -9,17 +9,17 @@ import Animated, {
 import Svg, { Rect } from "react-native-svg";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Rating } from "@/types/card";
 
 const { width } = Dimensions.get("window");
 const CARD_HEIGHT = 400;
 
 type FlashcardUIProps = {
   deckName: string;
-  learned: number;
-  total: number;
   question: string;
   answer: string;
   hint?: string;
+  onSubmitRating?: (rating: Rating) => void;
 };
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
@@ -27,11 +27,10 @@ const AnimatedRect = Animated.createAnimatedComponent(Rect);
 export default function
   FlashcardUI({
   deckName,
-  learned,
-  total,
   question,
   answer,
   hint,
+  onSubmitRating,
 }: FlashcardUIProps) {
   const [revealed, setRevealed] = useState(false);
   const radius = useSharedValue(0);
@@ -78,6 +77,13 @@ export default function
     transform: [{ scale: cardScale.value }],
   }));
 
+   const handleRating = (rating: Rating) => {
+    onSubmitRating?.(rating);
+    // Reset card state for next card
+    setRevealed(false);
+    radius.value = 0;
+  };
+
   return (
     <View className="items-center justify-center p-4 w-full">
       <Animated.View
@@ -94,11 +100,7 @@ export default function
               {question}
             </Text>
           </View>
-          <View>
-            <Text className="font-semibold text-stone-400">
-              {learned} / {total}
-            </Text>
-          </View>
+          
         </View>
 
         {/* Hint + Answer Overlay */}
@@ -144,6 +146,30 @@ export default function
           />
         </TouchableOpacity>
       </Animated.View>
+
+      {/* Rating Buttons - Show when answer is revealed */}
+      {revealed && onSubmitRating && (
+        <View className="flex-row gap-4 mt-6">
+          <TouchableOpacity
+            onPress={() => handleRating("again")}
+            className="bg-red-500 px-6 py-3 rounded-lg"
+          >
+            <Text className="text-white font-semibold">Again</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleRating("hard")}
+            className="bg-orange-500 px-6 py-3 rounded-lg"
+          >
+            <Text className="text-white font-semibold">Hard</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleRating("easy")}
+            className="bg-green-500 px-6 py-3 rounded-lg"
+          >
+            <Text className="text-white font-semibold">Easy</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }

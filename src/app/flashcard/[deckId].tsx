@@ -5,12 +5,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useDeckWithProgressById } from "@/query/decks";
 import { ProgressBar } from "../../components/ui/ProgressBar";
-import FlashcardContainer from "../../components/flashcard/FlashcardContainer";
-import Flashcard from "@/components/flashcard/Flashcard";
+import FlashcardUI from "@/components/flashcard/FlashcardUI";
+import { useNextCard } from "@/hooks/cards";
 
 export default function FlashcardScreen() {
   const { deckId } = useLocalSearchParams<{ deckId: string }>();
   const { data: deckData, isLoading } = useDeckWithProgressById(deckId);
+  const { card, isLoading: isCardLoading, isError, error, submitRating, reload } = useNextCard(deckId);
 
   if (isLoading || !deckData) {
     return (
@@ -20,24 +21,29 @@ export default function FlashcardScreen() {
     );
   }
 
-  // TODO: replace this with real cards from deckData
-  const cards = [
-    {
-      question: "Capital of India?",
-      answer: "New Delhi",
-      hint: "Starts with N",
-    },
-    {
-      question: "Capital of France?",
-      answer: "Paris",
-      hint: "City of Light",
-    },
-    {
-      question: "Capital of Japan?",
-      answer: "Tokyo",
-      hint: "Starts with T",
-    },
-  ];
+  if (isCardLoading) {
+    return (
+      <SafeAreaView className="bg-bg flex-1 items-center justify-center">
+        <Text>Loading card...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (isError) {
+    return (
+      <SafeAreaView className="bg-bg flex-1 items-center justify-center">
+        <Text>Error loading card: {error?.message}</Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (!card) {
+    return (
+      <SafeAreaView className="bg-bg flex-1 items-center justify-center">
+        <Text>No more cards to review! 🎉</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="bg-bg flex-1">
@@ -50,7 +56,13 @@ export default function FlashcardScreen() {
           />
           <ProgressBar percent={deckData.progress.percent} />
         </View>
-        <Flashcard deckName={deckData.title} learned={deckData.progress.learned} total={deckData.progress.total || deckData.card_count} question="What is the capital of France?" answer="Paris" hint="City of Light" />
+        <FlashcardUI 
+          deckName={deckData.title} 
+          question={card.question}
+          answer={card.answer} 
+          hint={card.hint} 
+          onSubmitRating={submitRating}
+        />
       </Container>
     </SafeAreaView>
   );
