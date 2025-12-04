@@ -2,7 +2,7 @@ import "react-native-reanimated";
 import { useEffect } from "react";
 import "../global.css";
 import { Stack } from "expo-router";
-import { initDB } from "@/lib/db";
+import { db, initDB } from "@/lib/db";
 import { seedDummyData } from "@/lib/seed";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/query/client";
@@ -13,6 +13,22 @@ export default function Layout() {
     (async () => {
       await initDB(); // ensure tables exist
       await seedDummyData(); // only then seed data
+
+
+      try {
+        const cardReviews = await db.getAllAsync("SELECT * FROM card_reviews;");
+        const existingCards = await db.getAllAsync<{ count: number }>('SELECT COUNT(*) as count FROM cards;');
+        const results = await db.getAllAsync("SELECT * FROM deck_progress;");
+        // console.log("=== card_reviews data ===");
+        console.log("=== cards data ===");
+        console.log(JSON.stringify(existingCards, null, 2));
+        console.log("=== results data ===");
+        console.log(JSON.stringify(results, null, 2));
+        // console.log(JSON.stringify(cardReviews, null, 2));
+        // console.log(`Total reviews: ${cardReviews.length}`);
+      } catch (error) {
+        console.error("Error fetching card_reviews:", error);
+      }
     })();
   }, []);
 

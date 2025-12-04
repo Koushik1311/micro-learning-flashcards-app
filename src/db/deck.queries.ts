@@ -21,25 +21,48 @@ export async function getProgressByDeckId(
   return res.length ? (res[0] as DeckProgress) : null;
 }
 
-export async function upsertProgress(
+// Internal helper to upsert both fields in one place
+async function upsertDeckProgress(
   deckId: string,
-  learned: number,
-  total: number,
+  {
+    learned,
+    total,
+  }: {
+    learned?: number;
+    total?: number;
+  },
 ) {
   const now = Date.now();
   const existing = await getProgressByDeckId(deckId);
+
   if (existing) {
+    const nextLearned = learned ?? existing.learned_cards;
+    const nextTotal = total ?? existing.total_cards;
+
     await db.runAsync(
       "UPDATE deck_progress SET learned_cards = ?, total_cards = ?, updated_at = ? WHERE deck_id = ?;",
-      [learned, total, now, deckId],
+      [nextLearned, nextTotal, now, deckId],
     );
   } else {
     const id = `${Date.now()}-${Math.random()}`;
+    const initialLearned = learned ?? 0;
+    const initialTotal = total ?? 0;
+
     await db.runAsync(
       "INSERT INTO deck_progress (id, deck_id, learned_cards, total_cards, updated_at) VALUES (?, ?, ?, ?, ?);",
-      [id, deckId, learned, total, now],
+      [id, deckId, initialLearned, initialTotal, now],
     );
   }
+}
+
+// Update only total_cards (keep learned_cards)
+export async function upsertTotalCardsProgress(deckId: string, total: number) {
+  await upsertDeckProgress(deckId, { total });
+}
+
+// Update only learned_cards (keep total_cards)
+export async function upsertLearnedCardsProgress(deckId: string, learned: number) {
+  await upsertDeckProgress(deckId, { learned });
 }
 
 export async function getDeckWithProgress() {
