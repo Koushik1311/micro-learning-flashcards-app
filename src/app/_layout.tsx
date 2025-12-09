@@ -14,18 +14,19 @@ export default function Layout() {
       await initDB(); // ensure tables exist
       await seedDummyData(); // only then seed data
 
-
       try {
         const cardReviews = await db.getAllAsync("SELECT * FROM card_reviews;");
-        const existingCards = await db.getAllAsync<{ count: number }>('SELECT COUNT(*) as count FROM cards;');
-        const results = await db.getAllAsync("SELECT * FROM deck_progress;");
-        // console.log("=== cards data ===");
-        // console.log(JSON.stringify(existingCards, null, 2));
-        console.log("=== results data ===");
-        console.log(JSON.stringify(results, null, 2));
-        // console.log("=== card_reviews data ===");
-        // console.log(JSON.stringify(cardReviews, null, 2));
-        // console.log(`Total reviews: ${cardReviews.length}`);
+        const quiz = await db.getAllAsync(
+          "SELECT * FROM cards WHERE deck_id = ? AND options IS NOT NULL AND options != '';"
+        );
+
+        console.log("=======Quiz=======");
+        console.log(JSON.stringify(quiz, null, 2));
+
+        // const cards = await db.getAllAsync("SELECT * FROM cards LIMIT 10;");
+
+        // console.log("=======Cards=======");
+        // console.log(JSON.stringify(cards, null, 2));
       } catch (error) {
         console.error("Error fetching card_reviews:", error);
       }
@@ -35,16 +36,15 @@ export default function Layout() {
   return (
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView>
-
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          animation: "fade",
-        }}
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            animation: "fade",
+          }}
         >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
-        </GestureHandlerRootView>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
+      </GestureHandlerRootView>
     </QueryClientProvider>
   );
 }

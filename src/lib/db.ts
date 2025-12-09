@@ -15,7 +15,7 @@ export function initDB() {
       description TEXT,
       card_count INTEGER,
       is_premium INTEGER,
-      cover_image_url TEXT,
+      language TEXT,
       price_rupees REAL,
       imported_at INTEGER
     );
@@ -32,6 +32,7 @@ export function initDB() {
       solution TEXT,
       meta TEXT,
       tags TEXT,
+      options TEXT,  -- NEW: JSON array of 4 options ["option1", "option2", "option3", "option4"]
       created_at INTEGER,
       FOREIGN KEY(deck_id) REFERENCES decks(id)
     );

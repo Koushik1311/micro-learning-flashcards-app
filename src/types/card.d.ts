@@ -7,6 +7,7 @@ export type CardType = {
   solution: string;
   meta: string;
   tags: string;
+  options?: string; // JSON string: ["option1", "option2", "option3", "option4"]
   created_at: number;
 }
 
